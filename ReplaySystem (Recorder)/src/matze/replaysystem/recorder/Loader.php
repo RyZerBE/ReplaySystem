@@ -101,9 +101,7 @@ class Loader extends PluginBase {
                 $replay = ReplayManager::getInstance()->getReplayByLevel($sender->getLevelNonNull());
                 if(is_null($replay)) {
                     $replay = new Replay($sender->getLevelNonNull());
-                    ReplayManager::getInstance()->addReplay($replay);
                     $replay->startRecording();
-
                     $replay->setSpawn($sender);
                     break;
                 }

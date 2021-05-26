@@ -116,6 +116,7 @@ class Replay {
     }
 
     public function startRecording(): void {
+        ReplayManager::getInstance()->addReplay($this);
         $this->setRunning(true);
         $level = $this->getLevel();
         foreach($level->getChunks() as $chunk) {
@@ -127,6 +128,7 @@ class Replay {
     }
 
     public function stopRecording(): void {
+        ReplayManager::getInstance()->removeReplay($this);
         $this->setRunning(false);
         foreach($this->getQueuedChunks(count($this->chunkQueue)) as $chunk) {
             $this->addChunk($chunk);
