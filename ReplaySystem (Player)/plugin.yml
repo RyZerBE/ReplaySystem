@@ -2,6 +2,3 @@ name: ReplaySystemPlayer
 version: 1.0
 api: 3.0.0
 main: matze\replaysystem\player\Loader
-commands:
-  replay:
-    description: Ok

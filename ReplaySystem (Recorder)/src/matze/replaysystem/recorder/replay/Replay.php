@@ -17,6 +17,7 @@ use pocketmine\entity\object\ItemEntity;
 use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 use pocketmine\Server;
 use function array_search;
 use function base64_encode;
@@ -61,8 +62,7 @@ class Replay {
      */
     public function __construct(Level $level){
         $this->level = $level;
-        $this->id = mt_rand(1000, 9999);
-        Server::getInstance()->broadcastMessage("" . $this->getId());
+        $this->id = mt_rand(1000, 9999);//Todo
     }
 
     /**
@@ -215,6 +215,7 @@ class Replay {
             "GeometryData" => base64_encode($entity->getSkin()->getGeometryData())
         ]) : "null");
         $action->item = ($entity instanceof ItemEntity ? ItemUtils::toString($entity->getItem()) : "null");
+        $action->isPlayer = ($entity instanceof Player);
         $this->addAction($action);
 
         if($entity instanceof Human) {

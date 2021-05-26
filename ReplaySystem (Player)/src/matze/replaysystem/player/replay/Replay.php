@@ -35,6 +35,8 @@ class Replay {
     private $ticksPerTick = 1;
     /** @var int  */
     private $duration = 0;
+    /** @var string  */
+    private $formattedDuration = "";
     /** @var bool  */
     private $running = false;
     /** @var bool  */
@@ -140,10 +142,24 @@ class Replay {
     }
 
     /**
+     * @return string
+     */
+    public function getFormattedDuration(): string{
+        return $this->formattedDuration;
+    }
+
+    /**
      * @param int $duration
      */
     public function setDuration(int $duration): void{
         $this->duration = $duration;
+
+        $seconds = floor($duration / 20);
+        $minutes = floor($seconds / 60);
+        $seconds = $seconds % 60;
+        if($minutes <= 9) $minutes = "0" . $minutes;
+        if($seconds <= 9) $seconds = "0" . $seconds;
+        $this->formattedDuration = "§a" . $minutes . "§7:§a" . $seconds;
     }
 
     /**
@@ -216,7 +232,7 @@ class Replay {
         if($minutes <= 9) $minutes = "0" . $minutes;
         if($seconds <= 9) $seconds = "0" . $seconds;
         $playType = ($this->isPaused() ? "§r§a« §r§7| §r§6§lPaused §r§7| §r§a»" : ($this->getPlayType() === self::PLAY_TYPE_FORWARD ? "§r§a« §r§7| §r§aPaused §r§7| §r§6§l»" : "§r§6§l« §r§7| §r§aPaused §r§7| §r§a»"));//||
-        $tip = "§r§8[§a" . $minutes . "§7:§a" . $seconds . "§8] " . $playType;
+        $tip = "§r§8[§a" . $minutes . "§7:§a" . $seconds . "§7/" . $this->getFormattedDuration() . "§8] " . $playType;
         foreach($this->getLevel()->getPlayers() as $player) $player->sendTip($tip);
 
         if($this->isPaused()) return;

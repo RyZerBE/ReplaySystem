@@ -36,6 +36,8 @@ class EntitySpawnAction extends Action {
     public $skin;
     /** @var string|null */
     public $item;
+    /** @var bool */
+    public $isPlayer;
 
     /**
      * @return string
@@ -52,7 +54,8 @@ class EntitySpawnAction extends Action {
             "Nametag" => $this->nametag,
             "ScoreTag" => $this->scoreTag,
             "Skin" => $this->skin,
-            "Item" => $this->item
+            "Item" => $this->item,
+            "IsPlayer" => $this->isPlayer
         ]);
     }
 }

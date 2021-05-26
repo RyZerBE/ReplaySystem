@@ -95,7 +95,7 @@ class Loader extends PluginBase {
      * @return bool
      */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool{
-        if(!$sender instanceof Player) return false;
+        if(!$sender instanceof Player || !$sender->isOp()) return false;
         switch($command->getName()) {
             case "replaytest": {
                 $replay = ReplayManager::getInstance()->getReplayByLevel($sender->getLevelNonNull());

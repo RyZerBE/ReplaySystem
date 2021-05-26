@@ -10,6 +10,8 @@ use matze\replaysystem\player\entity\ReplayHuman;
 use matze\replaysystem\player\entity\ReplayItemEntity;
 use matze\replaysystem\player\entity\ReplaySnowball;
 use matze\replaysystem\player\listener\EntityExplodeListener;
+use matze\replaysystem\player\listener\PlayerInteractListener;
+use matze\replaysystem\player\listener\PlayerJoinListener;
 use matze\replaysystem\player\replay\Replay;
 use matze\replaysystem\player\replay\ReplayManager;
 use matze\replaysystem\player\scheduler\ReplayUpdateTask;
@@ -66,7 +68,9 @@ class Loader extends PluginBase {
 
     private function initListener(): void {
         $listeners = [
-            new EntityExplodeListener()
+            new EntityExplodeListener(),
+            new PlayerJoinListener(),
+            new PlayerInteractListener()
         ];
         foreach($listeners as $listener) {
             Server::getInstance()->getPluginManager()->registerEvents($listener, $this);
@@ -85,40 +89,5 @@ class Loader extends PluginBase {
         foreach($entities as $entity) {
             Entity::registerEntity($entity, true);
         }
-    }
-
-    /**
-     * @param CommandSender $sender
-     * @param Command $command
-     * @param string $label
-     * @param array $args
-     * @return bool
-     */
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool{
-        if(!$sender instanceof Player) return false;
-        switch($command->getName()) {
-            case "replay": {
-                if(!isset($args[0])) break;
-
-                $replayId = $args[0];
-                $replay = ReplayManager::getInstance()->getReplay($replayId);
-                if(!is_null($replay)) {
-                    if(isset($args[1])) {
-                        $replay->setTicksPerTick((int)$args[1]);
-                        break;
-                    }
-                    $replay->setPlayType(($replay->getPlayType() === Replay::PLAY_TYPE_FORWARD ? Replay::PLAY_TYPE_BACKWARDS : Replay::PLAY_TYPE_FORWARD));
-                    break;
-                }
-                $sender = $sender->getName();
-                ReplayManager::getInstance()->playReplay($replayId, function(Replay $replay) use ($sender): void {
-                    $sender = Server::getInstance()->getPlayerExact($sender);
-                    if(is_null($sender)) return;
-                    $sender->teleport($replay->getSpawn());
-                });
-                break;
-            }
-        }
-        return true;
     }
 }

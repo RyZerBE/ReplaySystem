@@ -15,6 +15,7 @@ use pocketmine\network\mcpe\protocol\LevelChunkPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use function base64_decode;
+use function is_file;
 use function is_null;
 use function uniqid;
 
@@ -71,10 +72,13 @@ class ReplayManager {
 
     /**
      * @param string $replayId
-     * @param callable(Replay $replay)
+     * @param callable $callable
+     * @return bool
      */
-    public function playReplay(string $replayId, callable $callable): void {
+    public function playReplay(string $replayId, callable $callable): bool {
         $path = Loader::getSettings()->get("path");
+        $file = $path . $replayId . ".dat";
+        if(!is_file($file)) return false;
         $level = uniqid();
         Server::getInstance()->generateLevel($level, 0, Flat::class, ["preset" => "2;256*minecraft:air;" . Biome::PLAINS . ";"]);
         AsyncExecuter::submitAsyncTask(function() use ($replayId, $path): ?array {
@@ -110,11 +114,11 @@ class ReplayManager {
             $level->stopTime();
 
             $replay->setLevel($level);
-            $replay->setRunning(true);
             $replay->setSpawn(Vector3Utils::fromString($replay->getExtraData()["Spawn"]));
             ReplayManager::getInstance()->addReplay($replay);
 
             ($callable)($replay);
         });
+        return true;
     }
 }

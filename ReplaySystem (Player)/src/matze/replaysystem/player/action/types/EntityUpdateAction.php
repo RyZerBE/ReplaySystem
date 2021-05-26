@@ -4,6 +4,7 @@ namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
 use matze\replaysystem\player\replay\Replay;
+use function boolval;
 use function is_null;
 
 class EntityUpdateAction extends Action {
@@ -54,7 +55,7 @@ class EntityUpdateAction extends Action {
         $entity->setNameTag($action->nametag);
         $entity->setScoreTag(($action->scoretag ?? ""));
         $entity->setScale($action->scale);
-        $entity->setNameTagVisible($action->nametagVisible);
-        $entity->setNameTagAlwaysVisible($action->nametagAlwaysVisible);
+        $entity->setNameTagVisible((bool)($action->nametagVisible ?? true));
+        $entity->setNameTagAlwaysVisible((bool)($action->nametagAlwaysVisible ?? true));
     }
 }

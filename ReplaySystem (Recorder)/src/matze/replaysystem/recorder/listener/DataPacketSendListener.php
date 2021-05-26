@@ -61,7 +61,6 @@ class DataPacketSendListener implements Listener {
      * @param Replay $replay
      */
     private function handlePacket(DataPacket $packet, Replay $replay): void {
-        if(!$packet instanceof TextPacket) Server::getInstance()->broadcastTip($packet->getName());
         if($packet instanceof MoveActorAbsolutePacket || $packet instanceof MovePlayerPacket) {
             $entity = Server::getInstance()->findEntity($packet->entityRuntimeId);
             if(is_null($entity) || $entity instanceof Player) return;
@@ -133,6 +132,8 @@ class DataPacketSendListener implements Listener {
             $action->nametag = $entity->getNameTag();
             $action->scoretag = $entity->getScoreTag();
             $action->scale = $entity->getScale();
+            $action->nametagVisible = $entity->isNameTagVisible();
+            $action->nametagAlwaysVisible = $entity->isNameTagAlwaysVisible();
             $replay->addAction($action);
             return;
         }

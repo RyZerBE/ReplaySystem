@@ -61,7 +61,6 @@ class EntityMoveAction extends Action {
         ));
         $entity->setForceMovementUpdate();
         $vector3 = new Vector3($action->x, $action->y, $action->z);
-        $entity->getLevel()->addParticle(new DustParticle($vector3, 100, 100, 0));
         if($entity->distance($vector3) >= 4) $entity->teleport($vector3);
     }
 }

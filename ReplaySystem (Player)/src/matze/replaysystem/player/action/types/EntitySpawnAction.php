@@ -52,6 +52,8 @@ class EntitySpawnAction extends Action {
     public $skin;
     /** @var string */
     public $item;
+    /** @var bool */
+    public $isPlayer;
 
     /**
      * @param array $data
@@ -70,6 +72,7 @@ class EntitySpawnAction extends Action {
         $action->scoreTag = $data["ScoreTag"];
         $action->skin = ($data["Skin"] !== "null" ? json_decode($data["Skin"], true) : null);
         $action->item = $data["Item"];
+        $action->isPlayer = $data["IsPlayer"];
         return $action;
     }
 
@@ -89,6 +92,7 @@ class EntitySpawnAction extends Action {
                 }
                 $nbt = Entity::createBaseNBT(new Vector3($action->x, $action->y, $action->z), null, $action->yaw, $action->pitch);
                 $nbt->setInt("EntityId", $action->entityID);
+                $nbt->setInt("IsPlayer", (int)$action->isPlayer);
                 $entity = null;
                 switch($action->networkID) {
                     case -1: {}
