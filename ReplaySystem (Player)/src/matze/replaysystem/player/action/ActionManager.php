@@ -12,6 +12,7 @@ use matze\replaysystem\player\action\types\EntityEventAction;
 use matze\replaysystem\player\action\types\EntityMoveAction;
 use matze\replaysystem\player\action\types\EntitySneakAction;
 use matze\replaysystem\player\action\types\EntitySpawnAction;
+use matze\replaysystem\player\action\types\EntityUpdateAction;
 use matze\replaysystem\player\action\types\LevelEventAction;
 use matze\replaysystem\player\action\types\LevelSoundEventAction;
 use matze\replaysystem\player\action\types\SetActorDataAction;
@@ -36,8 +37,9 @@ class ActionManager {
             new BlockPlaceAction(),
             new BlockBreakAction(),
             new EntityContentUpdateAction(),
-            new SetActorDataAction(),
-            new BlockEventAction()
+            //new SetActorDataAction(),
+            new BlockEventAction(),
+            new EntityUpdateAction()
         ];
         foreach($actions as $action) {
             $this->actions[$action->getName()] = $action;

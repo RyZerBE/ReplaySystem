@@ -7,6 +7,7 @@ use matze\replaysystem\recorder\action\types\BlockEventAction;
 use matze\replaysystem\recorder\action\types\EntityAnimationAction;
 use matze\replaysystem\recorder\action\types\EntityEventAction;
 use matze\replaysystem\recorder\action\types\EntityMoveAction;
+use matze\replaysystem\recorder\action\types\EntityUpdateAction;
 use matze\replaysystem\recorder\action\types\LevelEventAction;
 use matze\replaysystem\recorder\action\types\LevelSoundEventAction;
 use matze\replaysystem\recorder\action\types\SetActorDataAction;
@@ -27,6 +28,7 @@ use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\network\mcpe\protocol\PacketPool;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\network\mcpe\protocol\TextPacket;
+use pocketmine\Player;
 use pocketmine\Server;
 use function is_null;
 
@@ -61,6 +63,9 @@ class DataPacketSendListener implements Listener {
     private function handlePacket(DataPacket $packet, Replay $replay): void {
         if(!$packet instanceof TextPacket) Server::getInstance()->broadcastTip($packet->getName());
         if($packet instanceof MoveActorAbsolutePacket || $packet instanceof MovePlayerPacket) {
+            $entity = Server::getInstance()->findEntity($packet->entityRuntimeId);
+            if(is_null($entity) || $entity instanceof Player) return;
+
             $action = new EntityMoveAction();
             $action->entityID = $packet->entityRuntimeId;
             $action->x = $packet->position->x;
@@ -120,9 +125,14 @@ class DataPacketSendListener implements Listener {
         }
 
         if($packet instanceof SetActorDataPacket) {
-            $action = new SetActorDataAction();
+            $entity = Server::getInstance()->findEntity($packet->entityRuntimeId);
+            if(is_null($entity)) return;
+
+            $action = new EntityUpdateAction();
             $action->entityId = $packet->entityRuntimeId;
-            $action->metadata = $packet->metadata;
+            $action->nametag = $entity->getNameTag();
+            $action->scoretag = $entity->getScoreTag();
+            $action->scale = $entity->getScale();
             $replay->addAction($action);
             return;
         }

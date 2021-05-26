@@ -12,6 +12,7 @@ use matze\replaysystem\recorder\listener\EntityLevelChangeListener;
 use matze\replaysystem\recorder\listener\EntitySpawnListener;
 use matze\replaysystem\recorder\listener\InventoryTransactionListener;
 use matze\replaysystem\recorder\listener\PlayerAnimationListener;
+use matze\replaysystem\recorder\listener\PlayerGameModeChangeListener;
 use matze\replaysystem\recorder\listener\PlayerItemHeldListener;
 use matze\replaysystem\recorder\listener\PlayerJoinListener;
 use matze\replaysystem\recorder\listener\PlayerMoveListener;
@@ -78,7 +79,8 @@ class Loader extends PluginBase {
             new EntityExplodeListener(),
             new PlayerAnimationListener(),
             new InventoryTransactionListener(),
-            new PlayerItemHeldListener()
+            new PlayerItemHeldListener(),
+            new PlayerGameModeChangeListener()
         ];
         foreach($listeners as $listener) {
             Server::getInstance()->getPluginManager()->registerEvents($listener, $this);

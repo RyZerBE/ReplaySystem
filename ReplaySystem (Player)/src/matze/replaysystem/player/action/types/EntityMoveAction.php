@@ -4,6 +4,7 @@ namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
 use matze\replaysystem\player\replay\Replay;
+use pocketmine\level\particle\DustParticle;
 use pocketmine\math\Vector3;
 use function is_null;
 
@@ -60,6 +61,7 @@ class EntityMoveAction extends Action {
         ));
         $entity->setForceMovementUpdate();
         $vector3 = new Vector3($action->x, $action->y, $action->z);
-        if($entity->distance($vector3) >= 2) $entity->teleport($vector3);
+        $entity->getLevel()->addParticle(new DustParticle($vector3, 100, 100, 0));
+        if($entity->distance($vector3) >= 4) $entity->teleport($vector3);
     }
 }

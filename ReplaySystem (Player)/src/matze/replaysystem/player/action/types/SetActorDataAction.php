@@ -42,6 +42,10 @@ class SetActorDataAction extends Action {
         $entity = $replay->findEntity($action->entityId);
         if(is_null($entity)) return;
 
+        foreach($action->metadata as $property => $data) {
+            $entity->getDataPropertyManager()->setInt();
+        }
+
         $pk = new SetActorDataPacket();
         $pk->entityRuntimeId = $entity->getId();
         $pk->metadata = $action->metadata;
