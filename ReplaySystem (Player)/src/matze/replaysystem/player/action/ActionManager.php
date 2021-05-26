@@ -5,6 +5,7 @@ namespace matze\replaysystem\player\action;
 use matze\replaysystem\player\action\types\BlockBreakAction;
 use matze\replaysystem\player\action\types\BlockPlaceAction;
 use matze\replaysystem\player\action\types\EntityAnimationAction;
+use matze\replaysystem\player\action\types\EntityContentUpdateAction;
 use matze\replaysystem\player\action\types\EntityDespawnAction;
 use matze\replaysystem\player\action\types\EntityEventAction;
 use matze\replaysystem\player\action\types\EntityMoveAction;
@@ -31,7 +32,8 @@ class ActionManager {
             new LevelEventAction(),
             new LevelSoundEventAction(),
             new BlockPlaceAction(),
-            new BlockBreakAction()
+            new BlockBreakAction(),
+            new EntityContentUpdateAction()
         ];
         foreach($actions as $action) {
             $this->actions[$action->getName()] = $action;

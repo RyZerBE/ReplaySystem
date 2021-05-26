@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\replay;
 
 use matze\replaysystem\recorder\action\Action;
+use matze\replaysystem\recorder\action\types\EntityContentUpdateAction;
 use matze\replaysystem\recorder\action\types\EntitySpawnAction;
 use matze\replaysystem\recorder\Loader;
 use matze\replaysystem\recorder\provider\ReplayProvider;
@@ -214,5 +215,17 @@ class Replay {
         ]) : "null");
         $action->item = ($entity instanceof ItemEntity ? ItemUtils::toString($entity->getItem()) : "null");
         $this->addAction($action);
+
+        if($entity instanceof Human) {
+            $armorInventory = $entity->getArmorInventory();
+            $action = new EntityContentUpdateAction();
+            $action->entityId = $entity->getId();
+            $action->item = ItemUtils::toString($entity->getInventory()->getItemInHand());
+            $action->boots = ItemUtils::toString($armorInventory->getBoots());
+            $action->leggings = ItemUtils::toString($armorInventory->getLeggings());
+            $action->chestplate = ItemUtils::toString($armorInventory->getChestplate());
+            $action->helmet = ItemUtils::toString($armorInventory->getHelmet());
+            $this->addAction($action);
+        }
     }
 }
