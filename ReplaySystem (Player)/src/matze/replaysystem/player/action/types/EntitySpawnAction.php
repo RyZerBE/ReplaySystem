@@ -3,8 +3,12 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\entity\ReplayArrow;
+use matze\replaysystem\player\entity\ReplayEgg;
+use matze\replaysystem\player\entity\ReplayEnderPearl;
 use matze\replaysystem\player\entity\ReplayHuman;
 use matze\replaysystem\player\entity\ReplayItemEntity;
+use matze\replaysystem\player\entity\ReplaySnowball;
 use matze\replaysystem\player\replay\Replay;
 use matze\replaysystem\player\utils\ItemUtils;
 use pocketmine\entity\Entity;
@@ -100,7 +104,20 @@ class EntitySpawnAction extends Action {
                         $entity = new ReplayHuman($replay->getLevel(), $nbt);
                         break;
                     }
-                    case EntityIds::FALLING_BLOCK: {
+                    case EntityIds::ARROW: {
+                        $entity = new ReplayArrow($replay->getLevel(), $nbt);
+                        break;
+                    }
+                    case EntityIds::ENDER_PEARL: {
+                        $entity = new ReplayEnderPearl($replay->getLevel(), $nbt);
+                        break;
+                    }
+                    case EntityIds::SNOWBALL: {
+                        $entity = new ReplaySnowball($replay->getLevel(), $nbt);
+                        break;
+                    }
+                    case EntityIds::EGG: {
+                        $entity = new ReplayEgg($replay->getLevel(), $nbt);
                         break;
                     }
                     case EntityIds::ITEM: {
@@ -113,7 +130,7 @@ class EntitySpawnAction extends Action {
                         break;
                     }
                     default: {
-                        $entity = Entity::createEntity($action->networkID, $replay->getLevel(), $nbt);
+                        //$entity = Entity::createEntity($action->networkID, $replay->getLevel(), $nbt);
                     }
                 }
                 if(is_null($entity)) return;

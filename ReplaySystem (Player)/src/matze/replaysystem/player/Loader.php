@@ -3,8 +3,12 @@
 namespace matze\replaysystem\player;
 
 use matze\replaysystem\player\action\ActionManager;
+use matze\replaysystem\player\entity\ReplayArrow;
+use matze\replaysystem\player\entity\ReplayEgg;
+use matze\replaysystem\player\entity\ReplayEnderPearl;
 use matze\replaysystem\player\entity\ReplayHuman;
 use matze\replaysystem\player\entity\ReplayItemEntity;
+use matze\replaysystem\player\entity\ReplaySnowball;
 use matze\replaysystem\player\listener\EntityExplodeListener;
 use matze\replaysystem\player\replay\Replay;
 use matze\replaysystem\player\replay\ReplayManager;
@@ -72,7 +76,11 @@ class Loader extends PluginBase {
     private function initEntities(): void {
         $entities = [
             ReplayHuman::class,
-            ReplayItemEntity::class
+            ReplayItemEntity::class,
+            ReplayArrow::class,
+            ReplayEnderPearl::class,
+            ReplaySnowball::class,
+            ReplayEgg::class
         ];
         foreach($entities as $entity) {
             Entity::registerEntity($entity, true);
@@ -95,6 +103,10 @@ class Loader extends PluginBase {
                 $replayId = $args[0];
                 $replay = ReplayManager::getInstance()->getReplay($replayId);
                 if(!is_null($replay)) {
+                    if(isset($args[1])) {
+                        $replay->setTicksPerTick((int)$args[1]);
+                        break;
+                    }
                     $replay->setPlayType(($replay->getPlayType() === Replay::PLAY_TYPE_FORWARD ? Replay::PLAY_TYPE_BACKWARDS : Replay::PLAY_TYPE_FORWARD));
                     break;
                 }

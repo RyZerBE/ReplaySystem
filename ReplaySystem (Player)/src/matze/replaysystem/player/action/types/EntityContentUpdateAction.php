@@ -61,7 +61,7 @@ class EntityContentUpdateAction extends Action {
         $entity->getArmorInventory()->setChestplate($action->chestplate);
         $entity->getArmorInventory()->setBoots($action->boots);
 
-        $entity->getInventory()->sendContents(Server::getInstance()->getOnlinePlayers());
+        $entity->getInventory()->sendHeldItem(Server::getInstance()->getOnlinePlayers());
         $entity->getArmorInventory()->sendContents(Server::getInstance()->getOnlinePlayers());
     }
 }

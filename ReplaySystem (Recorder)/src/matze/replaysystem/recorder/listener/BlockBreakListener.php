@@ -16,17 +16,19 @@ class BlockBreakListener implements Listener {
      */
     public function onBreak(BlockBreakEvent $event): void {
         if($event->isCancelled()) return;
-        $block = $event->getBlock();
+        $originBlock = $event->getBlock();
 
-        $replay = ReplayManager::getInstance()->getReplayByLevel($block->getLevel());
+        $replay = ReplayManager::getInstance()->getReplayByLevel($originBlock->getLevel());
         if(is_null($replay)) return;
 
-        $action = new BlockBreakAction();
-        $action->x = $block->x;
-        $action->y = $block->y;
-        $action->z = $block->z;
-        $action->blockId = $block->getId();
-        $action->blockDamage = $block->getDamage();
-        $replay->addAction($action);
+        foreach($originBlock->getAffectedBlocks() as $block) {
+            $action = new BlockBreakAction();
+            $action->x = $block->x;
+            $action->y = $block->y;
+            $action->z = $block->z;
+            $action->blockId = $block->getId();
+            $action->blockDamage = $block->getDamage();
+            $replay->addAction($action);
+        }
     }
 }

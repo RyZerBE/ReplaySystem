@@ -2,7 +2,6 @@
 
 namespace matze\replaysystem\recorder\listener;
 
-use matze\replaysystem\recorder\action\types\EntityDespawnAction;
 use matze\replaysystem\recorder\replay\ReplayManager;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerQuitEvent;
@@ -19,9 +18,6 @@ class PlayerQuitListener implements Listener {
         $level = $player->getLevel();
         $replay = ReplayManager::getInstance()->getReplayByLevel($level);
         if(is_null($replay)) return;
-
-        $action = new EntityDespawnAction();
-        $action->entityId = $player->getId();
-        $replay->addAction($action);
+        $replay->removeEntity($player);
     }
 }

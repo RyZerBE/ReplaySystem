@@ -4,6 +4,7 @@ namespace matze\replaysystem\recorder\replay;
 
 use matze\replaysystem\recorder\action\Action;
 use matze\replaysystem\recorder\action\types\EntityContentUpdateAction;
+use matze\replaysystem\recorder\action\types\EntityDespawnAction;
 use matze\replaysystem\recorder\action\types\EntitySpawnAction;
 use matze\replaysystem\recorder\Loader;
 use matze\replaysystem\recorder\provider\ReplayProvider;
@@ -17,6 +18,7 @@ use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Server;
+use function array_search;
 use function base64_encode;
 use function count;
 use function implode;
@@ -194,7 +196,6 @@ class Replay {
     public function addEntity(Entity $entity): void {
         if(in_array($entity->getId(), $this->entities)) return;
         $this->entities[] = $entity->getId();
-        if($entity instanceof Human) $entity->saveNBT();
 
         $action = new EntitySpawnAction();
         $action->networkID = $entity::NETWORK_ID;
@@ -227,5 +228,15 @@ class Replay {
             $action->helmet = ItemUtils::toString($armorInventory->getHelmet());
             $this->addAction($action);
         }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    public function removeEntity(Entity $entity): void {
+        if(in_array($entity->getId(), $this->entities)) unset($this->entities[array_search($entity->getId(), $this->entities)]);
+        $action = new EntityDespawnAction();
+        $action->entityId = $entity->getId();
+        $this->addAction($action);
     }
 }

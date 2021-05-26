@@ -3,11 +3,13 @@
 namespace matze\replaysystem\recorder\listener;
 
 use Generator;
+use matze\replaysystem\recorder\action\types\BlockEventAction;
 use matze\replaysystem\recorder\action\types\EntityAnimationAction;
 use matze\replaysystem\recorder\action\types\EntityEventAction;
 use matze\replaysystem\recorder\action\types\EntityMoveAction;
 use matze\replaysystem\recorder\action\types\LevelEventAction;
 use matze\replaysystem\recorder\action\types\LevelSoundEventAction;
+use matze\replaysystem\recorder\action\types\SetActorDataAction;
 use matze\replaysystem\recorder\replay\Replay;
 use matze\replaysystem\recorder\replay\ReplayManager;
 use pocketmine\event\Listener;
@@ -16,12 +18,14 @@ use pocketmine\network\mcpe\NetworkBinaryStream;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\BatchPacket;
+use pocketmine\network\mcpe\protocol\BlockEventPacket;
 use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\network\mcpe\protocol\PacketPool;
+use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\network\mcpe\protocol\TextPacket;
 use pocketmine\Server;
 use function is_null;
@@ -111,6 +115,25 @@ class DataPacketSendListener implements Listener {
             $action->entityType = $packet->entityType;
             $action->isBabyMob = $packet->isBabyMob;
             $action->disableRelativeVolume = $packet->disableRelativeVolume;
+            $replay->addAction($action);
+            return;
+        }
+
+        if($packet instanceof SetActorDataPacket) {
+            $action = new SetActorDataAction();
+            $action->entityId = $packet->entityRuntimeId;
+            $action->metadata = $packet->metadata;
+            $replay->addAction($action);
+            return;
+        }
+
+        if($packet instanceof BlockEventPacket) {
+            $action = new BlockEventAction();
+            $action->x = $packet->x;
+            $action->y = $packet->y;
+            $action->z = $packet->z;
+            $action->eventData = $packet->eventData;
+            $action->eventType = $packet->eventType;
             $replay->addAction($action);
             return;
         }

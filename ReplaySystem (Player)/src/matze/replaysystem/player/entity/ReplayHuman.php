@@ -22,8 +22,5 @@ class ReplayHuman extends Human {
         return parent::onUpdate($currentTick);
     }
 
-    /**
-     * @param EntityDamageEvent $source
-     */
     public function attack(EntityDamageEvent $source): void{}
 }

@@ -8,9 +8,9 @@ use pocketmine\entity\Entity;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
+use function floor;
 use function is_null;
 use function json_decode;
-use function round;
 
 class Replay {
     public const PLAY_TYPE_FORWARD = 0;
@@ -31,6 +31,8 @@ class Replay {
 
     /** @var int  */
     private $tick = 0;
+    /** @var int  */
+    private $ticksPerTick = 1;
     /** @var int  */
     private $duration = 0;
     /** @var bool  */
@@ -110,6 +112,13 @@ class Replay {
     }
 
     /**
+     * @return int
+     */
+    public function getTicksPerTick(): int{
+        return $this->ticksPerTick;
+    }
+
+    /**
      * @return Level|null
      */
     public function getLevel(): ?Level{
@@ -135,6 +144,13 @@ class Replay {
      */
     public function setDuration(int $duration): void{
         $this->duration = $duration;
+    }
+
+    /**
+     * @param int $ticksPerTick
+     */
+    public function setTicksPerTick(int $ticksPerTick): void{
+        $this->ticksPerTick = $ticksPerTick;
     }
 
     /**
@@ -194,42 +210,51 @@ class Replay {
     }
 
     public function onUpdate(): void {
-        $tip = "§8[§r§a" . round($this->tick / 20) . "§7/§a" . round($this->getDuration() / 20) . "§8]";
+        $seconds = floor($this->tick / 20);
+        $minutes = floor($seconds / 60);
+        $seconds = $seconds % 60;
+        if($minutes <= 9) $minutes = "0" . $minutes;
+        if($seconds <= 9) $seconds = "0" . $seconds;
+        $playType = ($this->isPaused() ? "§r§a« §r§7| §r§6§lPaused §r§7| §r§a»" : ($this->getPlayType() === self::PLAY_TYPE_FORWARD ? "§r§a« §r§7| §r§aPaused §r§7| §r§6§l»" : "§r§6§l« §r§7| §r§aPaused §r§7| §r§a»"));//||
+        $tip = "§r§8[§a" . $minutes . "§7:§a" . $seconds . "§8] " . $playType;
         foreach($this->getLevel()->getPlayers() as $player) $player->sendTip($tip);
+
         if($this->isPaused()) return;
-        if(isset($this->actions[$this->tick])) {
-            Timings::startTiming("Actions");
-            foreach($this->actions[$this->tick] as $actionName => $actions) {
-                $action = ActionManager::getInstance()->getAction($actionName);
-                if(is_null($action)) continue;
-                foreach($actions as $key => $actionData) {
-                    if(!isset($this->actionCache[$this->tick][$actionName][$key])) {
-                        $json = json_decode($actionData, true);
-                        if(!$json) continue;
-                        Timings::startTiming($actionName . "_decoding");
-                        $this->actionCache[$this->tick][$actionName][$key] = $action->decode($json);
-                        Timings::stopTiming($actionName . "_decoding");
+        Timings::startTiming("Actions");
+        for($i = 1; $i <= $this->getTicksPerTick(); $i++) {
+            if(isset($this->actions[$this->tick])) {
+                foreach($this->actions[$this->tick] as $actionName => $actions) {
+                    $action = ActionManager::getInstance()->getAction($actionName);
+                    if(is_null($action)) continue;
+                    foreach($actions as $key => $actionData) {
+                        if(!isset($this->actionCache[$this->tick][$actionName][$key])) {
+                            $json = json_decode($actionData, true);
+                            if(!$json) continue;
+                            Timings::startTiming($actionName . "_decoding");
+                            $this->actionCache[$this->tick][$actionName][$key] = $action->decode($json);
+                            Timings::stopTiming($actionName . "_decoding");
+                        }
+                        Timings::startTiming($actionName . "_handling");
+                        $action->handle($this, $this->actionCache[$this->tick][$actionName][$key], $this->getPlayType());
+                        Timings::stopTiming($actionName . "_handling");
                     }
-                    Timings::startTiming($actionName . "_handling");
-                    $action->handle($this, $this->actionCache[$this->tick][$actionName][$key], $this->getPlayType());
-                    Timings::stopTiming($actionName . "_handling");
                 }
             }
-            Timings::stopTiming("Actions");
-        }
 
-        switch($this->getPlayType()) {
-            case self::PLAY_TYPE_FORWARD: {
-                if($this->tick >= $this->getDuration()) break;
-                $this->tick++;
-                break;
-            }
-            case self::PLAY_TYPE_BACKWARDS: {
-                if($this->tick <= 0) break;
-                $this->tick--;
-                break;
+            switch($this->getPlayType()) {
+                case self::PLAY_TYPE_FORWARD: {
+                    if($this->tick >= $this->getDuration()) break;
+                    $this->tick++;
+                    break;
+                }
+                case self::PLAY_TYPE_BACKWARDS: {
+                    if($this->tick <= 0) break;
+                    $this->tick--;
+                    break;
+                }
             }
         }
+        Timings::stopTiming("Actions");
     }
 
     /**

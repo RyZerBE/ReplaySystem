@@ -2,10 +2,10 @@
 
 namespace matze\replaysystem\player\entity;
 
-use pocketmine\entity\object\ItemEntity;
+use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\EntityDamageEvent;
 
-class ReplayItemEntity extends ItemEntity {
+class ReplayEgg extends Egg {
 
     /** @var int  */
     public $drag = 0;
@@ -23,4 +23,5 @@ class ReplayItemEntity extends ItemEntity {
     }
 
     public function attack(EntityDamageEvent $source): void{}
+    public function move(float $dx, float $dy, float $dz): void{}
 }

@@ -2,7 +2,6 @@
 
 namespace matze\replaysystem\recorder\listener;
 
-use matze\replaysystem\recorder\action\types\EntityDespawnAction;
 use matze\replaysystem\recorder\replay\ReplayManager;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\Listener;
@@ -21,11 +20,7 @@ class EntityLevelChangeListener implements Listener {
         $entity = $event->getEntity();
 
         $replay = ReplayManager::getInstance()->getReplayByLevel($originLevel);
-        if(!is_null($replay)) {
-            $action = new EntityDespawnAction();
-            $action->entityId = $entity->getId();
-            $replay->addAction($action);
-        }
+        if(!is_null($replay)) $replay->removeEntity($entity);
 
         $replay = ReplayManager::getInstance()->getReplayByLevel($targetLevel);
         if(!is_null($replay)) $replay->addEntity($entity);

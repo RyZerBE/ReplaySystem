@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action;
 
 use matze\replaysystem\player\action\types\BlockBreakAction;
+use matze\replaysystem\player\action\types\BlockEventAction;
 use matze\replaysystem\player\action\types\BlockPlaceAction;
 use matze\replaysystem\player\action\types\EntityAnimationAction;
 use matze\replaysystem\player\action\types\EntityContentUpdateAction;
@@ -13,6 +14,7 @@ use matze\replaysystem\player\action\types\EntitySneakAction;
 use matze\replaysystem\player\action\types\EntitySpawnAction;
 use matze\replaysystem\player\action\types\LevelEventAction;
 use matze\replaysystem\player\action\types\LevelSoundEventAction;
+use matze\replaysystem\player\action\types\SetActorDataAction;
 use matze\replaysystem\player\utils\InstantiableTrait;
 
 class ActionManager {
@@ -33,7 +35,9 @@ class ActionManager {
             new LevelSoundEventAction(),
             new BlockPlaceAction(),
             new BlockBreakAction(),
-            new EntityContentUpdateAction()
+            new EntityContentUpdateAction(),
+            new SetActorDataAction(),
+            new BlockEventAction()
         ];
         foreach($actions as $action) {
             $this->actions[$action->getName()] = $action;
