@@ -8,6 +8,8 @@ use pocketmine\entity\Entity;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
+use pocketmine\Server;
+use function count;
 use function floor;
 use function is_null;
 use function json_decode;
@@ -33,6 +35,8 @@ class Replay {
     private $tick = 0;
     /** @var int  */
     private $ticksPerTick = 1;
+    /** @var int  */
+    private $tickInterval = 1;
     /** @var int  */
     private $duration = 0;
     /** @var string  */
@@ -90,6 +94,13 @@ class Replay {
      */
     public function getSpawn(): ?Vector3{
         return $this->spawn;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTickInterval(): int{
+        return $this->tickInterval;
     }
 
     /**
@@ -170,6 +181,13 @@ class Replay {
     }
 
     /**
+     * @param int $tickInterval
+     */
+    public function setTickInterval(int $tickInterval): void{
+        $this->tickInterval = $tickInterval;
+    }
+
+    /**
      * @param Vector3 $spawn
      */
     public function setSpawn(Vector3 $spawn): void{
@@ -226,6 +244,7 @@ class Replay {
     }
 
     public function onUpdate(): void {
+        if(count($this->getLevel()->getPlayers()) <= 0) return;
         $seconds = floor($this->tick / 20);
         $minutes = floor($seconds / 60);
         $seconds = $seconds % 60;
@@ -235,7 +254,7 @@ class Replay {
         $tip = "§r§8[§a" . $minutes . "§7:§a" . $seconds . "§7/" . $this->getFormattedDuration() . "§8] " . $playType;
         foreach($this->getLevel()->getPlayers() as $player) $player->sendTip($tip);
 
-        if($this->isPaused()) return;
+        if($this->isPaused() || (Server::getInstance()->getTick() % $this->getTickInterval()) !== 0) return;
         Timings::startTiming("Actions");
         for($i = 1; $i <= $this->getTicksPerTick(); $i++) {
             if(isset($this->actions[$this->tick])) {

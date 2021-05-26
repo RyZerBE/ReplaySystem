@@ -24,7 +24,7 @@ class TeleporterForm {
             if(!(bool)$entity->namedtag->getInt("IsPlayer", 0) || $entity->isInvisible()) continue;
             $form->addButton($entity->getNameTag(), -1, "", $entity->getId());
         }
-        $form->addButton("Close", -1, "", "close");
+        $form->addButton("§lClose", -1, "", "close");
         $form->sendToPlayer($player);
     }
 }

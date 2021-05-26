@@ -33,14 +33,6 @@ class ReplayManager {
     }
 
     /**
-     * @param string $id
-     * @return Replay|null
-     */
-    public function getReplay(string $id): ?Replay {
-        return $this->replays[$id] ?? null;
-    }
-
-    /**
      * @param Level $level
      * @param bool $onlyRunning
      * @return Replay|null
@@ -59,15 +51,7 @@ class ReplayManager {
      * @param Replay $replay
      */
     public function addReplay(Replay $replay): void {
-        $this->replays[$replay->getId()] = $replay;
-    }
-
-    /**
-     * @param Replay $replay
-     */
-    public function removeReplay(Replay $replay): void {
-        if(!isset($this->replays[$replay->getId()])) return;
-        unset($this->replays[$replay->getId()]);
+        $this->replays[] = $replay;
     }
 
     /**

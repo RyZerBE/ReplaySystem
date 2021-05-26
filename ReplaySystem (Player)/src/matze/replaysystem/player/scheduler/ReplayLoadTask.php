@@ -103,6 +103,7 @@ class ReplayLoadTask extends Task {
                     0 => ItemUtils::addItemTag(Item::get(Item::ARROW)->setCustomName("§r§aPlay Backwards"), "play_backwards", "replay_item"),
                     1 => ItemUtils::addItemTag(Item::get(Item::MAGMA_CREAM)->setCustomName("§r§aPause Replay"), "pause_replay", "replay_item"),
                     2 => ItemUtils::addItemTag(Item::get(Item::ARROW)->setCustomName("§r§aPlay Forward"), "play_forward", "replay_item"),
+                    7 => ItemUtils::addItemTag(Item::get(Item::MAGMA_CREAM)->setCustomName("§r§aSlowmode (§cOFF§a)"), "slowmode", "replay_item"),
                     8 => ItemUtils::addItemTag(Item::get(Item::COMPASS)->setCustomName("§r§aTeleporter"), "teleporter", "replay_item"),
                 ]);
 

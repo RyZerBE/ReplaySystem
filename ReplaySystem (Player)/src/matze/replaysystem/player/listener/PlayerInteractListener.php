@@ -8,6 +8,7 @@ use matze\replaysystem\player\replay\ReplayManager;
 use matze\replaysystem\player\utils\ItemUtils;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\item\Item;
 use pocketmine\level\sound\ClickSound;
 use function is_null;
 
@@ -37,6 +38,17 @@ class PlayerInteractListener implements Listener {
             case "play_forward": {
                 $replay->setPlayType(Replay::PLAY_TYPE_FORWARD);
                 $player->getLevel()->addSound(new ClickSound($player));
+                break;
+            }
+            case "slowmode": {
+                $player->getLevel()->addSound(new ClickSound($player));
+                if($replay->getTickInterval() === 1) {
+                    $replay->setTickInterval(2);
+                    $player->getInventory()->setItemInHand(ItemUtils::addItemTag(Item::get(Item::MAGMA_CREAM)->setCustomName("§r§aSlowmode (§6ON§a)"), "slowmode", "replay_item"));
+                } else {
+                    $replay->setTickInterval(1);
+                    $player->getInventory()->setItemInHand(ItemUtils::addItemTag(Item::get(Item::MAGMA_CREAM)->setCustomName("§r§aSlowmode (§cOFF§a)"), "slowmode", "replay_item"));
+                }
                 break;
             }
             case "teleporter": {
