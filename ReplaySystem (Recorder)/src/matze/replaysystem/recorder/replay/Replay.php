@@ -68,7 +68,7 @@ class Replay {
      */
     public function __construct(Level $level){
         $this->level = $level;
-        $this->id = mt_rand(1000, 9999);//Todo
+        $this->id = substr(sha1(rand()), 0, 6);
     }
 
     /**
