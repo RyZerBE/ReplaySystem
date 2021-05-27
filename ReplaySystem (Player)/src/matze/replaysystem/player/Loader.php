@@ -12,18 +12,12 @@ use matze\replaysystem\player\entity\ReplaySnowball;
 use matze\replaysystem\player\listener\EntityExplodeListener;
 use matze\replaysystem\player\listener\PlayerInteractListener;
 use matze\replaysystem\player\listener\PlayerJoinListener;
-use matze\replaysystem\player\replay\Replay;
-use matze\replaysystem\player\replay\ReplayManager;
 use matze\replaysystem\player\scheduler\ReplayUpdateTask;
 use matze\replaysystem\player\utils\Timings;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Config;
-use function is_null;
 
 class Loader extends PluginBase {
 

@@ -10,7 +10,6 @@ use pocketmine\level\sound\AnvilFallSound;
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
 use function array_rand;
-use function array_search;
 use function mt_rand;
 
 class ReplayLoadTask extends Task {

@@ -15,7 +15,6 @@ use matze\replaysystem\player\action\types\EntitySpawnAction;
 use matze\replaysystem\player\action\types\EntityUpdateAction;
 use matze\replaysystem\player\action\types\LevelEventAction;
 use matze\replaysystem\player\action\types\LevelSoundEventAction;
-use matze\replaysystem\player\action\types\SetActorDataAction;
 use matze\replaysystem\player\utils\InstantiableTrait;
 
 class ActionManager {

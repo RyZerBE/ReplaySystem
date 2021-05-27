@@ -4,7 +4,6 @@ namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
 use matze\replaysystem\player\replay\Replay;
-use function boolval;
 use function is_null;
 
 class EntityUpdateAction extends Action {

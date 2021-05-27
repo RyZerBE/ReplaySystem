@@ -15,10 +15,13 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\level\format\Chunk;
+use pocketmine\level\format\SubChunk;
+use pocketmine\level\format\SubChunkInterface;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
+use function array_filter;
 use function array_search;
 use function base64_encode;
 use function count;
@@ -56,6 +59,9 @@ class Replay {
     /** @var bool  */
     private $running = false;
 
+    /** @var bool  */
+    private $saveChunks = true;
+
     /**
      * Replay constructor.
      * @param Level $level
@@ -87,6 +93,13 @@ class Replay {
     }
 
     /**
+     * @return bool
+     */
+    public function doChunksSave(): bool{
+        return $this->saveChunks;
+    }
+
+    /**
      * @return Vector3
      */
     public function getSpawn(): Vector3{
@@ -106,6 +119,13 @@ class Replay {
      */
     public function setRunning(bool $running): void{
         $this->running = $running;
+    }
+
+    /**
+     * @param bool $saveChunks
+     */
+    public function setDoChunksSave(bool $saveChunks): void{
+        $this->saveChunks = $saveChunks;
     }
 
     /**
@@ -159,6 +179,7 @@ class Replay {
      * @param Chunk $chunk
      */
     public function queueChunk(Chunk $chunk): void {
+        if(!$this->doChunksSave()) return;
         $this->chunkQueue[] = $chunk;
     }
 
@@ -182,7 +203,10 @@ class Replay {
     public function addChunk(Chunk $chunk): void {
         $sChunk = implode(":", [$chunk->getX(), $chunk->getZ()]);
         if(isset($this->chunks[$sChunk])) return;
-        $this->chunks[$sChunk] = base64_encode($chunk->fastSerialize());
+        $isEmpty = count(array_filter($chunk->getSubChunks()->toArray(), function(SubChunkInterface $subChunk): bool {
+            return $subChunk->isEmpty();
+        })) <= 0;
+        if(!$isEmpty) $this->chunks[$sChunk] = base64_encode($chunk->fastSerialize());
     }
 
     /**

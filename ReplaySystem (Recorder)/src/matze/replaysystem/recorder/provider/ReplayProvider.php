@@ -23,6 +23,8 @@ class ReplayProvider {
             "Chunks" => $chunks,
             "ExtraData" => $extraData
         ]);
-        file_put_contents($path . $replayId . ".dat", $data);
+        $compressed = gzdeflate($data,  9);
+        $compressed = gzdeflate($compressed, 9);
+        file_put_contents($path . $replayId . ".dat", $compressed);
     }
 }
