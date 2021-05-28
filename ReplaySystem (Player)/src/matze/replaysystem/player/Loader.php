@@ -12,6 +12,7 @@ use matze\replaysystem\player\entity\ReplaySnowball;
 use matze\replaysystem\player\listener\EntityExplodeListener;
 use matze\replaysystem\player\listener\PlayerInteractListener;
 use matze\replaysystem\player\listener\PlayerJoinListener;
+use matze\replaysystem\player\listener\PlayerQuitListener;
 use matze\replaysystem\player\scheduler\ReplayUpdateTask;
 use matze\replaysystem\player\utils\Timings;
 use pocketmine\entity\Entity;
@@ -64,7 +65,8 @@ class Loader extends PluginBase {
         $listeners = [
             new EntityExplodeListener(),
             new PlayerJoinListener(),
-            new PlayerInteractListener()
+            new PlayerInteractListener(),
+            new PlayerQuitListener()
         ];
         foreach($listeners as $listener) {
             Server::getInstance()->getPluginManager()->registerEvents($listener, $this);

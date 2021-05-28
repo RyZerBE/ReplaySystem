@@ -14,6 +14,7 @@ class PlayerJoinListener implements Listener {
      * @param PlayerJoinEvent $event
      */
     public function onJoin(PlayerJoinEvent $event): void {
+        $event->setJoinMessage("");
         $player = $event->getPlayer();
 
         $player->setGamemode(3);
