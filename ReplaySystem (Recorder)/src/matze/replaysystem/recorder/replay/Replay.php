@@ -15,7 +15,6 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\level\format\Chunk;
-use pocketmine\level\format\SubChunk;
 use pocketmine\level\format\SubChunkInterface;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
@@ -30,7 +29,6 @@ use function in_array;
 use function is_null;
 use function json_encode;
 use function microtime;
-use function mt_rand;
 use function round;
 use function serialize;
 use function unserialize;
@@ -147,7 +145,11 @@ class Replay {
         }
     }
 
-    public function stopRecording(): void {
+    /**
+     * @param int|null $startTick
+     * @param int|null $stopTick
+     */
+    public function stopRecording(?int $startTick = null, ?int $stopTick = null): void {
         ReplayManager::getInstance()->removeReplay($this);
         $this->setRunning(false);
         foreach($this->getQueuedChunks(count($this->chunkQueue)) as $chunk) {
@@ -159,9 +161,23 @@ class Replay {
         $actions = serialize($this->actions);
         $chunks = serialize($this->chunks);
         $extraData = serialize(["Duration" => $this->tick, "Server" => Server::getInstance()->getMotd(), "Spawn" => Vector3Utils::toString($this->getSpawn())]);
-        AsyncExecuter::submitAsyncTask(function() use ($actions, $chunks, $extraData, $replayId, $path): float {
+        if(is_null($stopTick)) $stopTick = $this->getTick();
+        AsyncExecuter::submitAsyncTask(function() use ($actions, $chunks, $extraData, $replayId, $path, $startTick, $stopTick): float {
             $microtime = microtime(true);
-            ReplayProvider::saveReplay($path, $replayId, unserialize($actions), unserialize($chunks), unserialize($extraData));
+            $actions = unserialize($actions);
+            $chunks = unserialize($chunks);
+            $extraData = unserialize($extraData);
+
+            if(!is_null($startTick)) {
+                $newActions = [];
+                if($startTick < 0) $startTick = 0;
+                foreach($actions as $tick => $action) {
+                    if($tick < $startTick || $tick > $stopTick) continue;
+                    $newActions[($tick - $startTick)] = $action;
+                }
+                $actions = $newActions;
+            }
+            ReplayProvider::saveReplay($path, $replayId, $actions, $chunks, $extraData);
             return round(microtime(true) - $microtime, 4);
         }, function(Server $server, float $microtime) use ($replayId): void {
             $server->getLogger()->info("Saved Replay " . $replayId . ". Took " . $microtime . "s");

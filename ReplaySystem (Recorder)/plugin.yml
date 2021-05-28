@@ -5,3 +5,4 @@ main: matze\replaysystem\recorder\Loader
 commands:
   replaytest:
     description: Test replay
+    permission: op
