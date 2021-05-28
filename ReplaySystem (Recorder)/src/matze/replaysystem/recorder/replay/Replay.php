@@ -146,12 +146,14 @@ class Replay {
     }
 
     /**
+     * @param bool $save
      * @param int|null $startTick
      * @param int|null $stopTick
      */
-    public function stopRecording(?int $startTick = null, ?int $stopTick = null): void {
+    public function stopRecording(bool $save = true, ?int $startTick = null, ?int $stopTick = null): void {
         ReplayManager::getInstance()->removeReplay($this);
         $this->setRunning(false);
+        if(!$save) return;
         foreach($this->getQueuedChunks(count($this->chunkQueue)) as $chunk) {
             $this->addChunk($chunk);
         }
