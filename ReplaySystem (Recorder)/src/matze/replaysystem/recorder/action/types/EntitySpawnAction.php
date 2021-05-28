@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\action\types;
 
 use matze\replaysystem\recorder\action\Action;
+use function json_decode;
 use function json_encode;
 
 class EntitySpawnAction extends Action {
@@ -57,5 +58,26 @@ class EntitySpawnAction extends Action {
             "Item" => $this->item,
             "IsPlayer" => $this->isPlayer
         ]);
+    }
+
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public static function decode(array $data): Action{
+        $action = new EntitySpawnAction();
+        $action->networkID = $data["NetworkID"];
+        $action->entityID = $data["EntityId"];
+        $action->x = $data["X"];
+        $action->y = $data["Y"];
+        $action->z = $data["Z"];
+        $action->yaw = $data["Yaw"];
+        $action->pitch = $data["Pitch"];
+        $action->nametag = $data["Nametag"];
+        $action->scoreTag = $data["ScoreTag"];
+        $action->skin = ($data["Skin"] !== "null" ? json_decode($data["Skin"], true) : null);
+        $action->item = $data["Item"];
+        $action->isPlayer = $data["IsPlayer"];
+        return $action;
     }
 }

@@ -25,4 +25,14 @@ class EntityDespawnAction extends Action {
             "EntityId" => $this->entityId
         ]);
     }
+
+    /**
+     * @param array $data
+     * @return Action|EntityDespawnAction
+     */
+    public static function decode(array $data): Action{
+        $action = new EntityDespawnAction();
+        $action->entityId = $data["EntityId"];
+        return $action;
+    }
 }

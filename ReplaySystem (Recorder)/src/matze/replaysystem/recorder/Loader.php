@@ -105,7 +105,7 @@ class Loader extends PluginBase {
                     $replay->setSpawn($sender);
                     break;
                 }
-                $replay->stopRecording();
+                $replay->stopRecording(true, ($replay->getTick() - (20 * 30)));
                 break;
             }
         }

@@ -27,11 +27,13 @@ use function count;
 use function implode;
 use function in_array;
 use function is_null;
+use function json_decode;
 use function json_encode;
 use function microtime;
 use function round;
 use function serialize;
 use function unserialize;
+use function var_dump;
 
 class Replay {
     public const CHUNKS_PER_TICK = 40;
@@ -158,24 +160,58 @@ class Replay {
             $this->addChunk($chunk);
         }
 
+        if(is_null($stopTick)) $stopTick = $this->getTick();
+        $duration = (is_null($startTick) ? $this->tick : ($stopTick - $startTick));
+
         $replayId = $this->getId();
         $path = Loader::getSettings()->get("path");
         $actions = serialize($this->actions);
         $chunks = serialize($this->chunks);
-        $extraData = serialize(["Duration" => $this->tick, "Server" => Server::getInstance()->getMotd(), "Spawn" => Vector3Utils::toString($this->getSpawn())]);
-        if(is_null($stopTick)) $stopTick = $this->getTick();
+        $extraData = serialize(["Duration" => $duration, "Server" => Server::getInstance()->getMotd(), "Spawn" => Vector3Utils::toString($this->getSpawn())]);
         AsyncExecuter::submitAsyncTask(function() use ($actions, $chunks, $extraData, $replayId, $path, $startTick, $stopTick): float {
             $microtime = microtime(true);
             $actions = unserialize($actions);
             $chunks = unserialize($chunks);
             $extraData = unserialize($extraData);
 
+            /*
+             * This hardcoded and stupid shit is for clutches
+             * Otherwise there would be no player in the replay :)
+             */
             if(!is_null($startTick)) {
+                $oldActions = $actions;
                 $newActions = [];
                 if($startTick < 0) $startTick = 0;
                 foreach($actions as $tick => $action) {
                     if($tick < $startTick || $tick > $stopTick) continue;
                     $newActions[($tick - $startTick)] = $action;
+                }
+                $entities = [];
+                foreach($oldActions as $tick => $action) {
+                    foreach($oldActions[$tick] as $action => $actions) {
+                        if($tick >= $startTick || !in_array($action, ["EntitySpawnAction", "EntityDespawnAction"])) continue;
+                        foreach($actions as $actionData) {
+                            $json = json_decode($actionData, true);
+                            if(!$json) continue;
+                            switch($action) {
+                                case "EntitySpawnAction": {
+                                    $decode = EntitySpawnAction::decode($json);
+                                    $entities[$decode->entityID] = $actionData;
+                                    break;
+                                }
+                                case "EntityDespawnAction": {
+                                    $decode = EntityDespawnAction::decode($json);
+                                    if(isset($entities[$decode->entityId])){
+                                        unset($entities[$decode->entityId]);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach($entities as $entityId => $actionData) {
+                    $newActions[0]["EntitySpawnAction"][] = $actionData;
                 }
                 $actions = $newActions;
             }
