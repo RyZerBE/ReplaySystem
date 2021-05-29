@@ -13,6 +13,7 @@ use matze\replaysystem\player\listener\EntityExplodeListener;
 use matze\replaysystem\player\listener\PlayerInteractListener;
 use matze\replaysystem\player\listener\PlayerJoinListener;
 use matze\replaysystem\player\listener\PlayerQuitListener;
+use matze\replaysystem\player\provider\ReplayProvider;
 use matze\replaysystem\player\scheduler\ReplayUpdateTask;
 use matze\replaysystem\player\utils\Timings;
 use pocketmine\entity\Entity;
@@ -39,6 +40,12 @@ class Loader extends PluginBase {
         $this->initEntities();
 
         $this->getScheduler()->scheduleRepeatingTask(new ReplayUpdateTask(), 1);
+
+
+        foreach (glob(self::$settings->get("path")."*") as $filePath) {
+            $replayId = basename($filePath, ".dat");
+            ReplayProvider::expiredReplay($replayId);
+        }
     }
 
     public function onDisable(): void {
