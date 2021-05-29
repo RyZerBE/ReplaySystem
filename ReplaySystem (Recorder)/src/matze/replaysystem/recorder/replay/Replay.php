@@ -168,6 +168,7 @@ class Replay {
         $actions = serialize($this->actions);
         $chunks = serialize($this->chunks);
         $extraData = serialize(["Duration" => $duration, "Server" => Server::getInstance()->getMotd(), "Spawn" => Vector3Utils::toString($this->getSpawn())]);
+        ReplayProvider::addIdToPlayer($this->getLevel()->getPlayers(), $replayId);
         AsyncExecuter::submitAsyncTask(function() use ($actions, $chunks, $extraData, $replayId, $path, $startTick, $stopTick): float {
             $microtime = microtime(true);
             $actions = unserialize($actions);

@@ -2,6 +2,7 @@
 
 namespace matze\replaysystem\player\listener;
 
+use matze\replaysystem\player\form\ChooseOptionForm;
 use matze\replaysystem\player\form\PlayReplayForm;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -23,6 +24,7 @@ class PlayerJoinListener implements Listener {
         $player->getArmorInventory()->clearAll();
         $player->removeAllEffects();
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 9999999, 1, false));
-        PlayReplayForm::open($player);
+        #PlayReplayForm::open($player);
+        ChooseOptionForm::open($player);
     }
 }
