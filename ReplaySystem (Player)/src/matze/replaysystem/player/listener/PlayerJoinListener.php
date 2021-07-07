@@ -2,6 +2,7 @@
 
 namespace matze\replaysystem\player\listener;
 
+use baubolp\core\provider\AsyncExecutor;
 use matze\replaysystem\player\form\ChooseOptionForm;
 use matze\replaysystem\player\form\PlayReplayForm;
 use pocketmine\entity\Effect;
@@ -18,13 +19,15 @@ class PlayerJoinListener implements Listener {
         $event->setJoinMessage("");
         $player = $event->getPlayer();
 
-        $player->setGamemode(3);
-        $player->setImmobile();
+        $player->setGamemode(2);
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->removeAllEffects();
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 9999999, 1, false));
-        #PlayReplayForm::open($player);
-        ChooseOptionForm::open($player);
+        AsyncExecutor::submitClosureTask(20, function(int $tick) use ($player): void {
+            if(!$player->isConnected()) return;
+            $player->setImmobile();
+            ChooseOptionForm::open($player);
+        });
     }
 }

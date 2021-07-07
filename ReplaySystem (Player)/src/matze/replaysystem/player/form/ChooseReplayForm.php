@@ -26,6 +26,7 @@ class ChooseReplayForm
             if(!ReplayManager::getInstance()->playReplay($replayId, function(Replay $replay) use ($name): void {
                 $player = Server::getInstance()->getPlayerExact($name);
                 if(is_null($player)) return;
+                $player->setGamemode(3);
                 Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ReplayLoadTask($player, $replay), 2);
             })) {
                 PlayReplayForm::open($player, "§cReplay does not exist!");

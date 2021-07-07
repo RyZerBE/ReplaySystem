@@ -8,12 +8,12 @@ use BauboLP\Core\Provider\AsyncExecutor;
 use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\Player;
 use pocketmine\Server;
+use function round;
 
 class ChooseOptionForm
 {
 
-    public static function open(Player $player): void
-    {
+    public static function open(Player $player): void {
         $form = new SimpleForm(function (Player $player, $data): void{
             if(is_null($data)) return;
 
@@ -32,14 +32,15 @@ class ChooseOptionForm
 
                     return [];
                 }, function (Server $server, $result) use ($playerName) {
-                    if(($player = $server->getPlayerExact($playerName)) != null)
-                    ChooseReplayForm::open($player, (is_array($result) == true) ? $result : []);
+                    if(($player = $server->getPlayerExact($playerName)) != null){
+                        ChooseReplayForm::open($player, (is_array($result) == true) ? $result : []);
+                    }
                 });
             }
         });
-
+        $form->setTitle("§lReplay");
         $form->addButton("Search Replay", 0, "textures/ui/magnifyingGlass.png", "search");
         $form->addButton("Last Replays", 0, "textures/ui/book_edit_hover.png", "choose");
-        $form->sendToPlayer($player);
+        $player->sendForm($form);
     }
 }
