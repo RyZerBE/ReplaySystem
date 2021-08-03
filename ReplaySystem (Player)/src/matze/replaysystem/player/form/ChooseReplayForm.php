@@ -4,6 +4,7 @@
 namespace matze\replaysystem\player\form;
 
 
+use BauboLP\Cloud\CloudBridge;
 use jojoe77777\FormAPI\SimpleForm;
 use matze\replaysystem\player\Loader;
 use matze\replaysystem\player\replay\Replay;
@@ -19,7 +20,10 @@ class ChooseReplayForm
     public static function open(Player $player, array $ids)
     {
         $form = new SimpleForm(function (Player $player, $data): void{
-            if(is_null($data)) return;
+            if($data === null) {
+                ChooseOptionForm::open($player);
+                return;
+            }
 
             $replayId = $data;
             $name = $player->getName();

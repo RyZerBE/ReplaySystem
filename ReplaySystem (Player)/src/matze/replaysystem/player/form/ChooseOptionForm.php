@@ -4,18 +4,21 @@
 namespace matze\replaysystem\player\form;
 
 
+use BauboLP\Cloud\CloudBridge;
 use BauboLP\Core\Provider\AsyncExecutor;
 use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\Player;
 use pocketmine\Server;
-use function round;
 
 class ChooseOptionForm
 {
 
     public static function open(Player $player): void {
         $form = new SimpleForm(function (Player $player, $data): void{
-            if(is_null($data)) return;
+            if($data === null){
+                CloudBridge::getCloudProvider()->dispatchProxyCommand($player->getName(), "hub");
+                return;
+            }
 
             if($data === "search") {
                 PlayReplayForm::open($player);

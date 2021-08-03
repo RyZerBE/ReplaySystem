@@ -2,6 +2,9 @@
 
 namespace matze\replaysystem\player\form;
 
+use BauboLP\Cloud\CloudBridge;
+use BauboLP\Cloud\Provider\CloudProvider;
+use baubolp\core\Ryzer;
 use jojoe77777\FormAPI\CustomForm;
 use matze\replaysystem\player\Loader;
 use matze\replaysystem\player\replay\Replay;
@@ -20,8 +23,8 @@ class PlayReplayForm {
      */
     public static function open(Player $player, ?string $errorMessage = null): void {
         $form = new CustomForm(function(Player $player, $data): void {
-            if(is_null($data)) {
-                $player->kick("Lobbyy");//todo: Transfer Lobby
+            if($data === null) {
+                ChooseOptionForm::open($player);
                 return;
             }
             $replayId = $data["replayId"];
@@ -31,7 +34,7 @@ class PlayReplayForm {
                 if(is_null($player)) return;
                 Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new ReplayLoadTask($player, $replay), 2);
             })) {
-                self::open($player, "§cReplay does not exist");
+                ChooseOptionForm::open($player);
                 return;
             }
             $player->sendTitle("§a§lLoad replay...", "", 20, 40, 0);

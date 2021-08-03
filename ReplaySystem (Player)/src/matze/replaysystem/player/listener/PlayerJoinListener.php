@@ -23,8 +23,9 @@ class PlayerJoinListener implements Listener {
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
         $player->removeAllEffects();
+        $player->noDamageTicks = PHP_INT_MAX;
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 9999999, 1, false));
-        AsyncExecutor::submitClosureTask(20, function(int $tick) use ($player): void {
+        AsyncExecutor::submitClosureTask(60, function(int $tick) use ($player): void {
             if(!$player->isConnected()) return;
             $player->setImmobile();
             ChooseOptionForm::open($player);
