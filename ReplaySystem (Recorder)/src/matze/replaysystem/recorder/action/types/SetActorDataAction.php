@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\action\types;
 
 use matze\replaysystem\recorder\action\Action;
+use matze\replaysystem\recorder\action\ActionIds;
 use function json_encode;
 use function serialize;
 
@@ -13,6 +14,10 @@ class SetActorDataAction extends Action {
      */
     public function getName(): string{
         return "SetActorDataAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::SET_ACTOR_DATA_ACTION;
     }
 
     /** @var int */

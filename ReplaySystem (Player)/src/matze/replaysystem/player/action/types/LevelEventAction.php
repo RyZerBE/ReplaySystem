@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
@@ -14,6 +15,10 @@ class LevelEventAction extends Action {
      */
     public function getName(): string{
         return "LevelEventAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::LEVEL_EVENT_ACTION;
     }
 
     /** @var int */

@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use pocketmine\math\Vector3;
 use function is_null;
@@ -14,6 +15,10 @@ class EntityMoveAction extends Action {
      */
     public function getName(): string{
         return "EntityMoveAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_MOVE_ACTION;
     }
 
     /** @var string */

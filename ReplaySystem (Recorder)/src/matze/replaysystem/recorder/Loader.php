@@ -30,6 +30,7 @@ use pocketmine\utils\Config;
 use function is_null;
 
 class Loader extends PluginBase {
+    public const VERSION = "1.1.0";
 
     /** @var Loader|null */
     private static $instance = null;

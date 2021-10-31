@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\action\types;
 
 use matze\replaysystem\recorder\action\Action;
+use matze\replaysystem\recorder\action\ActionIds;
 use function json_encode;
 
 class BlockEventAction extends Action {
@@ -12,6 +13,10 @@ class BlockEventAction extends Action {
      */
     public function getName(): string{
         return "BlockEventAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::BLOCK_EVENT_ACTION;
     }
 
     /** @var int */

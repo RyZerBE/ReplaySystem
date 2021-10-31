@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use matze\replaysystem\player\utils\ItemUtils;
 use pocketmine\entity\Human;
@@ -17,6 +18,10 @@ class EntityContentUpdateAction extends Action {
      */
     public function getName(): string{
         return "EntityContentUpdateAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_CONTENT_UPDATE_ACTION;
     }
 
     /** @var int */

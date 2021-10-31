@@ -258,20 +258,16 @@ class Replay {
         Timings::startTiming("Actions");
         for($i = 1; $i <= $this->getTicksPerTick(); $i++) {
             if(isset($this->actions[$this->tick])) {
-                foreach($this->actions[$this->tick] as $actionName => $actions) {
-                    $action = ActionManager::getInstance()->getAction($actionName);
+                foreach($this->actions[$this->tick] as $actionId => $actions) {
+                    $action = ActionManager::getInstance()->getAction($actionId);
                     if(is_null($action)) continue;
                     foreach($actions as $key => $actionData) {
-                        if(!isset($this->actionCache[$this->tick][$actionName][$key])) {
+                        if(!isset($this->actionCache[$this->tick][$actionId][$key])) {
                             $json = json_decode($actionData, true);
                             if(!$json) continue;
-                            Timings::startTiming($actionName . "_decoding");
-                            $this->actionCache[$this->tick][$actionName][$key] = $action->decode($json);
-                            Timings::stopTiming($actionName . "_decoding");
+                            $this->actionCache[$this->tick][$actionId][$key] = $action->decode($json);
                         }
-                        Timings::startTiming($actionName . "_handling");
-                        $action->handle($this, $this->actionCache[$this->tick][$actionName][$key], $this->getPlayType());
-                        Timings::stopTiming($actionName . "_handling");
+                        $action->handle($this, $this->actionCache[$this->tick][$actionId][$key], $this->getPlayType());
                     }
                 }
             }
@@ -298,7 +294,7 @@ class Replay {
      */
     public function findEntity(int $entityID): ?Entity {
         foreach($this->getLevel()->getEntities() as $entity) {
-            if((int)$entity->namedtag->getInt("EntityId", -1) === $entityID) return $entity;
+            if($entity->namedtag->getInt("EntityId", -1) === $entityID) return $entity;
         }
         return null;
     }

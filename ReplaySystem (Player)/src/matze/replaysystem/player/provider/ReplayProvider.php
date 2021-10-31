@@ -3,16 +3,16 @@
 namespace matze\replaysystem\player\provider;
 
 use matze\replaysystem\player\Loader;
+use function date;
+use function file_exists;
 use function file_get_contents;
+use function filemtime;
 use function gzinflate;
 use function is_file;
 use function json_decode;
+use function strtotime;
 use function time;
 use function unlink;
-use function filemtime;
-use function strtotime;
-use function file_exists;
-use function date;
 use function var_dump;
 
 class ReplayProvider {

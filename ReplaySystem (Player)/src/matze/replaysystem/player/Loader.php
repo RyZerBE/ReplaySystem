@@ -22,6 +22,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 
 class Loader extends PluginBase {
+    public const VERSION = "1.1.0";
 
     /** @var Loader|null */
     private static $instance = null;

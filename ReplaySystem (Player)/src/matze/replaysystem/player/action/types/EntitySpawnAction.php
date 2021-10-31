@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\entity\ReplayArrow;
 use matze\replaysystem\player\entity\ReplayEgg;
 use matze\replaysystem\player\entity\ReplayEnderPearl;
@@ -28,6 +29,10 @@ class EntitySpawnAction extends Action {
      */
     public function getName(): string{
         return "EntitySpawnAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_SPAWN_ACTION;
     }
 
     /** @var int */

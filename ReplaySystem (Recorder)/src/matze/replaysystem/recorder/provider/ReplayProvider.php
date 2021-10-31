@@ -4,7 +4,6 @@ namespace matze\replaysystem\recorder\provider;
 
 use BauboLP\Core\Provider\AsyncExecutor;
 use pocketmine\Player;
-use pocketmine\Server;
 use function file_put_contents;
 use function json_encode;
 use function mkdir;

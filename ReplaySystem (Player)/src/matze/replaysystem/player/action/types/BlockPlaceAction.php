@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 
 class BlockPlaceAction extends Action {
@@ -12,6 +13,10 @@ class BlockPlaceAction extends Action {
      */
     public function getName(): string{
         return "BlockPlaceAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::BLOCK_PLACE_ACTION;
     }
 
     /** @var int */

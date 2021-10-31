@@ -20,8 +20,8 @@ use matze\replaysystem\player\utils\InstantiableTrait;
 class ActionManager {
     use InstantiableTrait;
 
-    /** @var array */
-    private $actions = [];
+    /** @var Action[] */
+    private array $actions = [];
 
     public function __construct(){
         $actions = [
@@ -41,7 +41,7 @@ class ActionManager {
             new EntityUpdateAction()
         ];
         foreach($actions as $action) {
-            $this->actions[$action->getName()] = $action;
+            $this->actions[$action->getId()] = $action;
         }
     }
 
@@ -52,11 +52,7 @@ class ActionManager {
         return $this->actions;
     }
 
-    /**
-     * @param string $name
-     * @return Action|null
-     */
-    public function getAction(string $name): ?Action {
-        return $this->actions[$name] ?? null;
+    public function getAction(int $action): ?Action {
+        return $this->actions[$action] ?? null;
     }
 }

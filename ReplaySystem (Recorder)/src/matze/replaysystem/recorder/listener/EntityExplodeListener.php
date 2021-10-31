@@ -4,9 +4,7 @@ namespace matze\replaysystem\recorder\listener;
 
 use matze\replaysystem\recorder\action\types\BlockBreakAction;
 use matze\replaysystem\recorder\replay\ReplayManager;
-use pocketmine\block\Block;
 use pocketmine\event\entity\EntityExplodeEvent;
-use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\event\Listener;
 use function is_null;
 

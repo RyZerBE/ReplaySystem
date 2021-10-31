@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\action\types;
 
 use matze\replaysystem\recorder\action\Action;
+use matze\replaysystem\recorder\action\ActionIds;
 use function json_encode;
 
 class EntityUpdateAction extends Action {
@@ -12,6 +13,10 @@ class EntityUpdateAction extends Action {
      */
     public function getName(): string{
         return "EntityUpdateAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_UPDATE_ACTION;
     }
 
     /** @var int */

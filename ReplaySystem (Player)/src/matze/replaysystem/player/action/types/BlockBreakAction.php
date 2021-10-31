@@ -3,15 +3,17 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 
 class BlockBreakAction extends Action {
 
-    /**
-     * @return string
-     */
     public function getName(): string{
         return "BlockBreakAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::BLOCK_BREAK_ACTION;
     }
 
     /** @var int */

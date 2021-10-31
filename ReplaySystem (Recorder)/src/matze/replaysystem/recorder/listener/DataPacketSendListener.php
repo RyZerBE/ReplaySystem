@@ -26,6 +26,7 @@ use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\network\mcpe\protocol\PacketPool;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
+use pocketmine\network\mcpe\protocol\UpdateAttributesPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use function is_null;
@@ -45,6 +46,7 @@ class DataPacketSendListener implements Listener {
             $packet->decode();
             foreach($this->getPackets($packet) as $buffer) {
                 $pk = PacketPool::getPacket($buffer);
+                if($pk instanceof UpdateAttributesPacket) continue;
                 if(!$pk->canBeBatched()) continue;
                 $pk->decode();
                 $this->handlePacket($pk, $replay);

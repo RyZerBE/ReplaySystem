@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use function is_null;
@@ -15,6 +16,10 @@ class SetActorDataAction extends Action {
      */
     public function getName(): string{
         return "SetActorDataAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::SET_ACTOR_DATA_ACTION;
     }
 
     /** @var int */

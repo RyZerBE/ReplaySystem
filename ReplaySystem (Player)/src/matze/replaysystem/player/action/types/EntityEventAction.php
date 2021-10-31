@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use function is_null;
@@ -14,6 +15,10 @@ class EntityEventAction extends Action {
      */
     public function getName(): string{
         return "EntityEventAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_EVENT_ACTION;
     }
 
     /** @var int */

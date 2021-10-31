@@ -3,6 +3,7 @@
 namespace matze\replaysystem\player\action\types;
 
 use matze\replaysystem\player\action\Action;
+use matze\replaysystem\player\action\ActionIds;
 use matze\replaysystem\player\replay\Replay;
 use function is_null;
 
@@ -13,6 +14,10 @@ class EntityDespawnAction extends Action {
      */
     public function getName(): string{
         return "EntityDespawnAction";
+    }
+
+    public function getId(): int{
+        return ActionIds::ENTITY_DESPAWN_ACTION;
     }
 
     /** @var int */

@@ -3,6 +3,7 @@
 namespace matze\replaysystem\recorder\replay;
 
 use matze\replaysystem\recorder\action\Action;
+use matze\replaysystem\recorder\action\ActionIds;
 use matze\replaysystem\recorder\action\types\EntityContentUpdateAction;
 use matze\replaysystem\recorder\action\types\EntityDespawnAction;
 use matze\replaysystem\recorder\action\types\EntitySpawnAction;
@@ -33,7 +34,6 @@ use function microtime;
 use function round;
 use function serialize;
 use function unserialize;
-use function var_dump;
 
 class Replay {
     public const CHUNKS_PER_TICK = 40;
@@ -167,7 +167,12 @@ class Replay {
         $path = Loader::getSettings()->get("path");
         $actions = serialize($this->actions);
         $chunks = serialize($this->chunks);
-        $extraData = serialize(["Duration" => $duration, "Server" => Server::getInstance()->getMotd(), "Spawn" => Vector3Utils::toString($this->getSpawn())]);
+        $extraData = serialize([
+            "Duration" => $duration,
+            "Server" => Server::getInstance()->getMotd(),
+            "Spawn" => Vector3Utils::toString($this->getSpawn()),
+            "Version" => Loader::VERSION
+        ]);
         ReplayProvider::addIdToPlayer($this->getLevel()->getPlayers(), $replayId);
         AsyncExecuter::submitAsyncTask(function() use ($actions, $chunks, $extraData, $replayId, $path, $startTick, $stopTick): float {
             $microtime = microtime(true);
@@ -190,21 +195,19 @@ class Replay {
                 $entities = [];
                 foreach($oldActions as $tick => $action) {
                     foreach($oldActions[$tick] as $action => $actions) {
-                        if($tick >= $startTick || !in_array($action, ["EntitySpawnAction", "EntityDespawnAction"])) continue;
+                        if($tick >= $startTick || !in_array($action, [ActionIds::ENTITY_SPAWN_ACTION, ActionIds::ENTITY_DESPAWN_ACTION])) continue;
                         foreach($actions as $actionData) {
                             $json = json_decode($actionData, true);
                             if(!$json) continue;
                             switch($action) {
-                                case "EntitySpawnAction": {
+                                case ActionIds::ENTITY_SPAWN_ACTION: {
                                     $decode = EntitySpawnAction::decode($json);
                                     $entities[$decode->entityID] = $actionData;
                                     break;
                                 }
-                                case "EntityDespawnAction": {
+                                case ActionIds::ENTITY_DESPAWN_ACTION: {
                                     $decode = EntityDespawnAction::decode($json);
-                                    if(isset($entities[$decode->entityId])){
-                                        unset($entities[$decode->entityId]);
-                                    }
+                                    unset($entities[$decode->entityId]);
                                     break;
                                 }
                             }
@@ -212,7 +215,7 @@ class Replay {
                     }
                 }
                 foreach($entities as $entityId => $actionData) {
-                    $newActions[0]["EntitySpawnAction"][] = $actionData;
+                    $newActions[0][ActionIds::ENTITY_SPAWN_ACTION][] = $actionData;
                 }
                 $actions = $newActions;
             }
@@ -268,7 +271,7 @@ class Replay {
      * @param Action $action
      */
     public function addAction(Action $action): void {
-        $this->actions[$this->getTick()][$action->getName()][] = $action->encode();
+        $this->actions[$this->getTick()][$action->getId()][] = $action->encode();
     }
 
     /**

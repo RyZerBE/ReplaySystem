@@ -75,8 +75,8 @@ class ReplayManager {
             $replay->setDuration($replay->getExtraData()["Duration"]);
 
             $level = Server::getInstance()->getLevelByName($level);
-            if(is_null($level)){
-                $server->getLogger()->error("Level must not be null.");
+            if(is_null($level) || $replay->getExtraData()["Version"] !== Loader::VERSION){
+                $server->getLogger()->error("Something went wrong with " . $replayId . "...");
                 return;
             }
             foreach($replay->getChunks() as $chunkXZ => $chunk) {
@@ -90,7 +90,7 @@ class ReplayManager {
                 }
 
                 foreach ($level->getChunkLoaders($chunk->getX(), $chunk->getZ()) as $chunkLoader) {
-                    if ($chunkLoader instanceof Player && $chunk !== null) {
+                    if ($chunkLoader instanceof Player) {
                         $chunkLoader->dataPacket(LevelChunkPacket::withoutCache($chunk->getX(), $chunk->getZ(), $chunk->getSubChunkSendCount(), $chunk->networkSerialize()));
                     }
                 }
