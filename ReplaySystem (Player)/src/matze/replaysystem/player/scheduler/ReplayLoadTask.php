@@ -6,9 +6,11 @@ use matze\replaysystem\player\Loader;
 use matze\replaysystem\player\replay\Replay;
 use matze\replaysystem\player\utils\ItemUtils;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\sound\AnvilFallSound;
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
+use pocketmine\utils\TextFormat;
 use function array_rand;
 use function mt_rand;
 
@@ -105,6 +107,8 @@ class ReplayLoadTask extends Task {
                     7 => ItemUtils::addItemTag(Item::get(Item::MAGMA_CREAM)->setCustomName("§r§aSlowmode (§cOFF§a)"), "slowmode", "replay_item"),
                     8 => ItemUtils::addItemTag(Item::get(Item::COMPASS)->setCustomName("§r§aTeleporter"), "teleporter", "replay_item"),
                 ]);
+
+                if(Loader::getSettings()->get("ema", false)) $player->getInventory()->setItem(4, ItemUtils::addItemTag(Item::get(ItemIds::BOOK)->setCustomName(TextFormat::BLUE."EMA: ".TextFormat::RED."Breaking Rules?"), "ema", "replay_item"));
 
                 $player->teleport($replay->getSpawn());
                 $this->cancel();

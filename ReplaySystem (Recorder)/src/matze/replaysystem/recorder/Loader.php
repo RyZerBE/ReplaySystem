@@ -2,6 +2,8 @@
 
 namespace matze\replaysystem\recorder;
 
+use matze\replaysystem\recorder\command\EMARecordCommand;
+use matze\replaysystem\recorder\command\ReplayCommand;
 use matze\replaysystem\recorder\listener\BlockBreakListener;
 use matze\replaysystem\recorder\listener\BlockPlaceListener;
 use matze\replaysystem\recorder\listener\ChunkLoadListener;
@@ -47,6 +49,7 @@ class Loader extends PluginBase {
 
         $this->initListener();
 
+        $this->getServer()->getCommandMap()->registerAll("replay", [new EMARecordCommand(), new ReplayCommand()]);
         $this->getScheduler()->scheduleRepeatingTask(new ReplayUpdateTask(), 1);
     }
 

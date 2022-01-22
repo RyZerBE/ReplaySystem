@@ -2,7 +2,6 @@
 
 namespace matze\replaysystem\recorder\provider;
 
-use BauboLP\Core\Provider\AsyncExecutor;
 use pocketmine\Player;
 use function file_put_contents;
 use function json_encode;
@@ -44,23 +43,5 @@ class ReplayProvider {
             else if (is_string($player))
                 $playerNames[] = $player;
         }
-
-        AsyncExecutor::submitMySQLAsyncTask("RyzerCore", function (\mysqli $mysqli) use ($playerNames, $id) {
-            if (is_array($playerNames)) {
-                foreach ($playerNames as $pName) {
-                    $res = $mysqli->query("SELECT * FROM `replayList` WHERE playername='$pName'");
-                    if ($res->num_rows > 0) {
-                        while ($data = $res->fetch_assoc()) {
-                            $oldList = explode(";", $data["replays"]);
-                            $oldList[] = $id;
-                            $newList = implode(";", $oldList);
-                            $mysqli->query("UPDATE `replayList` SET replays='$newList' WHERE playername='$pName'");
-                        }
-                    } else {
-                        $mysqli->query("INSERT INTO `replayList`(`playername`, `replays`) VALUES ('$pName', '$id')");
-                    }
-                }
-            }
-        });
     }
 }
